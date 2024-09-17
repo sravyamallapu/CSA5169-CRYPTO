@@ -1,0 +1,33 @@
+#include <stdio.h>
+long long mod_exp(long long base, long long exp, long long mod) {
+    long long result = 1;
+    while (exp > 0) {
+        if (exp % 2 == 1)
+            result = (result * base) % mod;
+        base = (base * base) % mod;
+        exp /= 2;
+    }
+    return result;
+}
+int main() {
+    long long p = 23; 
+    long long g = 5;  
+    long long a = 6;
+    long long b = 15;
+    long long A = mod_exp(g, a, p); 
+    long long B = mod_exp(g, b, p);  
+    long long shared_secret_A = mod_exp(B, a, p);
+    long long shared_secret_B = mod_exp(A, b, p); 
+    printf("Public parameters:\n");
+    printf("p: %lld\n", p);
+    printf("g: %lld\n", g);
+    printf("\n");
+    printf("User A's private key: %lld\n", a);
+    printf("User A's public key: %lld\n", A);
+    printf("User B's private key: %lld\n", b);
+    printf("User B's public key: %lld\n", B);
+    printf("\n");
+    printf("User A's computed shared secret: %lld\n", shared_secret_A);
+    printf("User B's computed shared secret: %lld\n", shared_secret_B);
+    return 0;
+}
