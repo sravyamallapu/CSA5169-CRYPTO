@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <string.h>
+
+void generateTable(char table[5][5], char key[]) {
+    int i, j, k = 0;
+    char alphabet[] = "ABCDEFGHIKLMNOPQRSTUVWXYZ";
+
+    for (i = 0; i < strlen(key); i++) {
+        if (strchr(key, key[i]) == NULL || key[i] == 'J') continue;
+        table[k / 5][k % 5] = key[i];
+        alphabet[strchr(alphabet, key[i]) - alphabet] = '\0';
+        k++;
+    }
+    
+
+    for (i = 0; i < 25 && k < 25; i++) {
+        if (alphabet[i] != '\0') {
+            table[k / 5][k % 5] = alphabet[i];
+            k++;
+        }
+    }
+}
+
+void playfairCipher(char table[5][5], char plaintext[], char ciphertext[]) {
+    int i, row1, row2, col1, col2;
+     char temp;
+    
+    for (i = 0; i < strlen(plaintext); i += 2) {
+        for (int j = 0; j < 5; j++) {
+            for (int k = 0; k < 5; k++) {
+                if (table[j][k] == plaintext[i]) row1 = j, col1 = k;
+                if (table[j][k] == plaintext[i + 1]) row2 = j, col2 = k;
+            }
+        }
+        
+
+        if (row1 == row2) { 
+            ciphertext[i] = table[row1][(col1 + 1) % 5];
+            ciphertext[i + 1] = table[row2][(col2 + 1) % 5];
+        } else if (col1 == col2) { 
+            ciphertext[i] = table[(row1 + 1) % 5][col1];
+            ciphertext[i + 1] = table[(row2 + 1) % 5][col2];
+        } else { 
+            temp = table[row1][col2];
+            ciphertext[i] = table[row1][col1];
+            ciphertext[i + 1] = temp;
+        }
+    }
+}
+int main() {
+    char key[] = "PLAYFAIREXAMPLE";
+    char plaintext[] = "HELLOXWORLD";
+    char ciphertext[100];
+    char table[5][5];
+    
+    generateTable(table, key);
+    playfairCipher(table, plaintext, ciphertext);
+    
+    printf("Key: %s\n", key);
+    printf("Plaintext: %s\n", plaintext);
+    printf("Ciphertext: %s\n", ciphertext);
+    
+    return 0;
+}
